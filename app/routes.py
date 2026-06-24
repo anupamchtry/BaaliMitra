@@ -1,7 +1,6 @@
 from flask import Blueprint, request, jsonify
 import os
 from app.crop_recommendation import predict_crop, get_districts_and_seasons, get_seasonal_climate
-from app.ai_chat import chat_with_ai, get_disease_context
 
 # Create a blueprint for API routes
 api_bp = Blueprint('api', __name__)
@@ -205,42 +204,3 @@ def disease_models_status():
         
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-@api_bp.route('/api/ai-chat', methods=['POST'])
-def ai_chat_api():
-    """API endpoint for AI chat about diseases"""
-    try:
-        data = request.get_json()
-        
-        # Get parameters
-        disease_name = data.get('disease_name', '')
-        crop_type = data.get('crop_type', '')
-        user_question = data.get('question', '')
-        is_initial = data.get('is_initial', False)
-        
-        # Get disease context
-        disease_info = get_disease_context(disease_name, crop_type)
-        
-        # Add custom symptoms/treatment if provided
-        if 'symptoms' in data:
-            disease_info['symptoms'] = data['symptoms']
-        if 'treatment' in data:
-            disease_info['treatment'] = data['treatment']
-        
-        # Get AI response
-        response = chat_with_ai(disease_info, user_question, is_initial)
-        
-        return jsonify({
-            "success": True,
-            "answer": response['answer'],
-            "is_off_topic": response['is_off_topic'],
-            "disease": disease_name
-        })
-        
-    except Exception as e:
-        print(f"Error in AI chat API: {str(e)}")
-        return jsonify({
-            "success": False,
-            "error": str(e),
-            "answer": "Sorry, I'm having trouble right now. Please try again."
-        }), 500
