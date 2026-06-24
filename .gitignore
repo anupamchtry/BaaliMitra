@@ -5,3 +5,4 @@ models/
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
+NDVI_labeled_BaaliMitra_v2.png
