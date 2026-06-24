@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BaaliMitra - Crop Recommendation System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/recommendation.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/enhanced-features.css') }}" />
+  </head>
+  <body>
+    <div class="app-container">
+      <header>
+        <div class="nav-container">
+          <div class="nav-left">
+            <a href="javascript:void(0);" class="back-link" onclick="goBack()">
+              <i class="fas fa-arrow-left"></i>
+            </a>
+            <a href="{{ url_for('disease_detection') }}" class="nav-item active">Disease Detection</a>
+            <a href="#" class="nav-item">Crop Library</a>
+          </div>
+
+          <a href="{{ url_for('index') }}" class="logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="BaaliMitra Logo" />
+          </a>
+
+          <div class="nav-right">
+            <a href="#" class="nav-item">Expert Connect</a>
+            <a href="#" class="nav-item">My History</a>
+            <div class="user-profile">
+              <img src="{{ url_for('static', filename='images/user-logo.png') }}" alt="User profile" />
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Welcome Screen with Process Steps -->
+      <div class="screen" id="welcome-screen">
+        <div class="page-title">
+          <h1>Crop Recommendation System</h1>
+          <p>
+            Get personalized crop suggestions based on your location, climate,
+            and soil conditions
+          </p>
+        </div>
+
+        <div class="process-container">
+          <div class="process-step">
+            <div class="process-icon">
+              <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <h3>Region & Climate</h3>
+            <p>Enter your location and climate conditions</p>
+            <div class="step-number">Step 1</div>
+          </div>
+
+          <div class="process-arrow">
+            <i class="fas fa-chevron-right"></i>
+          </div>
+
+          <div class="process-step">
+            <div class="process-icon">
+              <i class="fas fa-layer-group"></i>
+            </div>
+            <h3>Soil Analysis</h3>
+            <p>Provide soil composition details for better results</p>
+            <div class="step-number">Step 2</div>
+          </div>
+
+          <div class="process-arrow">
+            <i class="fas fa-chevron-right"></i>
+          </div>
+
+          <div class="process-step">
+            <div class="process-icon">
+              <i class="fas fa-seedling"></i>
+            </div>
+            <h3>Get Recommendations</h3>
+            <p>Discover the ideal crops for your farm</p>
+            <div class="step-number">Step 3</div>
+          </div>
+        </div>
+
+        <div class="action-button">
+          <button class="primary-btn" onclick="showScreen('region-screen')">
+            Get Started
+          </button>
+        </div>
+      </div>
+
+      <!-- Region & Climate Screen -->
+      <div class="screen hidden" id="region-screen">
+        <div class="page-title">
+          <h1>Region and Climate Information</h1>
+          <p>Tell us about your location and local weather conditions</p>
+        </div>
+
+        <div class="input-card">
+          <div class="card-header">
+            <i class="fas fa-map-marker-alt"></i>
+            <h2>Location Details</h2>
+          </div>
+
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="district">District</label>
+                <select id="district" class="form-control">
+                  <option value="" selected disabled>
+                    Select your district
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="season">Growing Season</label>
+                <select id="season" class="form-control">
+                  <option value="winter">Winter</option>
+                  <option value="summer">Summer</option>
+                  <option value="spring">Spring</option>
+                  <option value="monsoon">Autumn</option>
+                </select>
+              </div>
+
+              <div class="form-group location-group">
+                <button id="useLocation" class="location-button">
+                  <i class="fas fa-location-arrow"></i> Use my location
+                </button>
+                <small class="help-text"
+                  >Auto-detect my district and current season</small
+                >
+              </div>
+            </div>
+
+            <div class="toggle-container">
+              <label class="switch">
+                <input type="checkbox" id="toggleSeasonal" checked />
+                <span class="slider"></span>
+              </label>
+              <span class="toggle-label"
+                >Use seasonal climate data for selected district and
+                season</span
+              >
+              <button id="btnAutofill" class="autofill-button">
+                <i class="fas fa-sync-alt"></i> Autofill
+              </button>
+            </div>
+
+            <div id="seasonal-preview" class="info-box">
+              <i class="fas fa-info-circle"></i>
+              <span
+                >Using seasonal climate data for Varanasi in Summer: Temp: 32°C,
+                Humidity: 72%, Rainfall: 285mm</span
+              >
+            </div>
+
+            <div id="manual-climate" class="climate-inputs hidden">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="temperature">
+                    <i class="fas fa-thermometer-half"></i> Temperature (°C)
+                  </label>
+                  <input
+                    type="number"
+                    id="temperature"
+                    class="form-control"
+                    placeholder="e.g., 25"
+                    step="0.1" />
+                </div>
+                <div class="form-group">
+                  <label for="humidity">
+                    <i class="fas fa-tint"></i> Humidity (%)
+                  </label>
+                  <input
+                    type="number"
+                    id="humidity"
+                    class="form-control"
+                    placeholder="e.g., 75"
+                    step="0.1" />
+                </div>
+                <div class="form-group">
+                  <label for="rainfall">
+                    <i class="fas fa-cloud-rain"></i> Rainfall (mm)
+                  </label>
+                  <input
+                    type="number"
+                    id="rainfall"
+                    class="form-control"
+                    placeholder="e.g., 200"
+                    step="0.1" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-button">
+          <button class="secondary-btn" onclick="showScreen('welcome-screen')">
+            Back
+          </button>
+          <button class="primary-btn" onclick="showScreen('soil-screen')">
+            Next: Soil Analysis
+          </button>
+        </div>
+      </div>
+
+      <!-- Soil Analysis Screen -->
+      <div class="screen hidden" id="soil-screen">
+        <div class="page-title">
+          <h1>Soil Analysis Data</h1>
+          <p>
+            Enter your soil composition details for more accurate crop
+            recommendations
+          </p>
+        </div>
+
+        <div class="input-card">
+          <div class="card-header">
+            <i class="fas fa-layer-group"></i>
+            <h2>Soil Composition</h2>
+          </div>
+
+          <div class="card-body">
+            <div class="toggle-container">
+              <label class="switch">
+                <input type="checkbox" id="toggleSoil" />
+                <span class="slider"></span>
+              </label>
+              <span class="toggle-label"
+                >I have soil test results (N, P, K, pH)</span
+              >
+              <span class="help-text soil-help"
+                >If turned off, default values will be used (N=90, P=40, K=35,
+                pH=6.5)</span
+              >
+            </div>
+
+            <div id="soil-inputs" class="soil-inputs hidden">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="nitrogen">
+                    <i class="fas fa-flask"></i> Nitrogen (N)
+                  </label>
+                  <input
+                    type="number"
+                    id="nitrogen"
+                    class="form-control"
+                    value="90"
+                    min="0"
+                    max="500" />
+                  <small class="help-text">Range: 0-500 kg/ha</small>
+                </div>
+                <div class="form-group">
+                  <label for="phosphorus">
+                    <i class="fas fa-flask"></i> Phosphorus (P)
+                  </label>
+                  <input
+                    type="number"
+                    id="phosphorus"
+                    class="form-control"
+                    value="40"
+                    min="0"
+                    max="500" />
+                  <small class="help-text">Range: 0-500 kg/ha</small>
+                </div>
+                <div class="form-group">
+                  <label for="potassium">
+                    <i class="fas fa-flask"></i> Potassium (K)
+                  </label>
+                  <input
+                    type="number"
+                    id="potassium"
+                    class="form-control"
+                    value="35"
+                    min="0"
+                    max="500" />
+                  <small class="help-text">Range: 0-500 kg/ha</small>
+                </div>
+                <div class="form-group">
+                  <label for="ph"> <i class="fas fa-vial"></i> pH Level </label>
+                  <input
+                    type="number"
+                    id="ph"
+                    class="form-control"
+                    value="6.5"
+                    min="0"
+                    max="14"
+                    step="0.1" />
+                  <small class="help-text">Range: 0-14</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="soil-tips">
+              <h4>
+                <i class="fas fa-lightbulb"></i> Why soil analysis matters:
+              </h4>
+              <ul>
+                <li>
+                  Different crops require specific soil conditions to thrive
+                </li>
+                <li>
+                  Accurate soil data leads to 30-40% better yield predictions
+                </li>
+                <li>Helps determine if soil amendments are needed</li>
+                <li>
+                  Consider getting a professional soil test for best results
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-button">
+          <button class="secondary-btn" onclick="showScreen('region-screen')">
+            Back
+          </button>
+          <button class="primary-btn" onclick="analyzeData()">
+            <i class="fas fa-search"></i> Get Crop Recommendations
+          </button>
+        </div>
+      </div>
+
+      <!-- Results Screen -->
+      <div class="screen hidden" id="results-screen">
+        <div class="page-title">
+          <h1>Recommended Crops</h1>
+          <p>Based on your location, climate, and soil conditions</p>
+        </div>
+
+        <div class="result-summary info-box">
+          <i class="fas fa-check-circle"></i>
+          <span
+            ><strong>Based on:</strong> District: ------ | Season: ------ |
+            Temperature: --°C | Humidity: --% | Rainfall: ---- | N: -- | P: --
+            | K: -- | pH: --</span
+          >
+        </div>
+
+        <div class="recommendations-container">
+          <h3 class="section-title">
+            <i class="fas fa-star"></i>
+            Top Recommended Crops
+          </h3>
+
+          <div class="crop-recommendations">
+            <!-- Rice -->
+            <div class="crop-card result-card">
+              <div class="crop-image">
+                <img src="images/crops/rice.jpg" alt="Rice (Paddy)" />
+              </div>
+              <div class="crop-details">
+                <h3>Rice (Paddy)</h3>
+                <div class="match-tag">
+                  <span class="match-percent">98%</span> match
+                </div>
+                <p>
+                  Ideal for your climate conditions. High yield potential with
+                  current rainfall and humidity levels.
+                </p>
+                <button class="info-button" onclick="showCropDetails('rice')">
+                  <i class="fas fa-info-circle"></i> More Details
+                </button>
+              </div>
+            </div>
+
+            <!-- Maize -->
+            <div class="crop-card result-card">
+              <div class="crop-image">
+                <img src="images/crops/maize.jpg" alt="Maize (Corn)" />
+              </div>
+              <div class="crop-details">
+                <h3>Maize (Corn)</h3>
+                <div class="match-tag">
+                  <span class="match-percent">95%</span> match
+                </div>
+                <p>
+                  Excellent choice for summer season. Thrives in high
+                  temperature with moderate rainfall.
+                </p>
+                <button class="info-button" onclick="showCropDetails('maize')">
+                  <i class="fas fa-info-circle"></i> More Details
+                </button>
+              </div>
+            </div>
+
+            <!-- Cotton -->
+            <div class="crop-card result-card">
+              <div class="crop-image">
+                <img src="images/crops/cotton.jpg" alt="Cotton" />
+              </div>
+              <div class="crop-details">
+                <h3>Cotton</h3>
+                <div class="match-tag">
+                  <span class="match-percent">92%</span> match
+                </div>
+                <p>
+                  Good match for your soil type. Requires consistent watering
+                  during dry spells.
+                </p>
+                <button class="info-button" onclick="showCropDetails('cotton')">
+                  <i class="fas fa-info-circle"></i> More Details
+                </button>
+              </div>
+            </div>
+
+            <!-- Soybean -->
+            <div class="crop-card result-card">
+              <div class="crop-image">
+                <img src="images/crops/soybean.jpg" alt="Soybean" />
+              </div>
+              <div class="crop-details">
+                <h3>Soybean</h3>
+                <div class="match-tag">
+                  <span class="match-percent">89%</span> match
+                </div>
+                <p>
+                  Suitable for your region. Helps improve soil nitrogen content
+                  for future crops.
+                </p>
+                <button
+                  class="info-button"
+                  onclick="showCropDetails('soybean')">
+                  <i class="fas fa-info-circle"></i> More Details
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="section-title">
+            <i class="fas fa-leaf"></i>
+            Poly-cropping Suggestions
+          </h3>
+
+          <div class="polycropping-container">
+            <div class="poly-pair">
+              <div class="poly-crop">
+                <img src="images/crops/rice.jpg" alt="Rice" />
+                <div class="crop-name">Rice</div>
+              </div>
+              <div class="plus-sign">+</div>
+              <div class="poly-crop">
+                <img src="images/crops/lady-finger.jpg" alt="Lady Finger" />
+                <div class="crop-name">Lady Finger</div>
+              </div>
+              <div class="poly-info">
+                <div class="match-tag small">
+                  <span class="match-percent">94%</span> match
+                </div>
+                <p>
+                  Companion planting can maximize land use and provide regular
+                  harvest income.
+                </p>
+              </div>
+            </div>
+
+            <div class="poly-pair">
+              <div class="poly-crop">
+                <img src="images/crops/maize.jpg" alt="Maize" />
+                <div class="crop-name">Maize</div>
+              </div>
+              <div class="plus-sign">+</div>
+              <div class="poly-crop">
+                <img src="images/crops/moong.jpg" alt="Moong" />
+                <div class="crop-name">Moong</div>
+              </div>
+              <div class="poly-info">
+                <div class="match-tag small">
+                  <span class="match-percent">91%</span> match
+                </div>
+                <p>
+                  Pulse crops fix nitrogen in soil, benefiting the maize growth.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-button">
+          <button class="secondary-btn" onclick="showScreen('soil-screen')">
+            <i class="fas fa-arrow-left"></i> Back
+          </button>
+          <button class="primary-btn" onclick="downloadReport()">
+            <i class="fas fa-file-download"></i> Download Report
+          </button>
+          <button class="primary-btn accent" onclick="findSeeds()">
+            <i class="fas fa-shopping-bag"></i> Find Seeds
+          </button>
+        </div>
+      </div>
+
+      <!-- Crop Details Modal -->
+      <div class="modal" id="crop-details-modal">
+        <div class="modal-content large-modal">
+          <div class="modal-header">
+            <h2>
+              <i class="fas fa-seedling"></i>
+              <span id="modal-crop-name">Rice</span> Details
+            </h2>
+            <span class="close-modal">&times;</span>
+          </div>
+          <div class="modal-body">
+            <div class="crop-modal-container">
+              <div class="crop-modal-image">
+                <img
+                  id="modal-crop-image"
+                  src="images/crops/rice.jpg"
+                  alt="Rice" />
+              </div>
+
+              <div class="crop-modal-details">
+                <div class="detail-section">
+                  <h3>Growing Season</h3>
+                  <p id="modal-growing-season">
+                    Summer (Kharif) - June to November
+                  </p>
+                </div>
+
+                <div class="detail-section">
+                  <h3>Water Requirements</h3>
+                  <p id="modal-water">
+                    High - Requires standing water for most of the growing
+                    period
+                  </p>
+                </div>
+
+                <div class="detail-section">
+                  <h3>Expected Yield</h3>
+                  <p id="modal-yield">
+                    3.5 - 6 tonnes per hectare under optimal conditions
+                  </p>
+                </div>
+
+                <div class="detail-section">
+                  <h3>Market Value</h3>
+                  <p id="modal-market">
+                    ₹1,800 - ₹2,400 per quintal (current season)
+                  </p>
+                </div>
+
+                <div class="detail-section">
+                  <h3>Common Varieties</h3>
+                  <p id="modal-varieties">
+                    Basmati, IR-36, Swarna, MTU-7029, HMT
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="crop-care-tips">
+              <h3>
+                <i class="fas fa-hand-holding-medical"></i> Cultivation Tips
+              </h3>
+              <ul id="modal-tips">
+                <li>Prepare seedbeds 5-10 days before sowing</li>
+                <li>
+                  Maintain water level of 2-5 cm during the vegetative stage
+                </li>
+                <li>
+                  Apply balanced fertilizer: 100kg N, 50kg P and 50kg K per
+                  hectare
+                </li>
+                <li>
+                  Watch for blast disease and stem borers - early detection is
+                  crucial
+                </li>
+                <li>Harvest when 80% of the grains are golden yellow</li>
+              </ul>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="primary-btn" onclick="closeModal()">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Global variables
+      let currentStep = 1;
+
+      // Show specific screen and hide others
+      function showScreen(screenId) {
+        document.querySelectorAll(".screen").forEach((screen) => {
+          screen.classList.add("hidden");
+        });
+        document.getElementById(screenId).classList.remove("hidden");
+
+        // Update current step based on screen
+        if (screenId === "welcome-screen") currentStep = 1;
+        if (screenId === "region-screen") currentStep = 1;
+        if (screenId === "soil-screen") currentStep = 2;
+        if (screenId === "results-screen") currentStep = 3;
+
+        // Scroll to top when changing screens
+        window.scrollTo(0, 0);
+      }
+
+      // Toggle handlers
+      document.addEventListener("DOMContentLoaded", function () {
+        // Load districts from API
+        fetch('/api/crop-recommendation/districts')
+          .then(response => response.json())
+          .then(data => {
+            const districtSelect = document.getElementById('district');
+            if (data.districts && data.districts.length > 0) {
+              data.districts.forEach(district => {
+                const option = document.createElement('option');
+                option.value = district;
+                option.textContent = district;
+                districtSelect.appendChild(option);
+              });
+            }
+          })
+          .catch(error => console.error('Error loading districts:', error));
+
+        // Autofill button handler
+        document.getElementById('btnAutofill').addEventListener('click', function() {
+          const district = document.getElementById('district').value;
+          const season = document.getElementById('season').value;
+          
+          if (!district || !season) {
+            alert('Please select district and season first');
+            return;
+          }
+          
+          // Show loading state
+          this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+          this.disabled = true;
+          
+          // Fetch seasonal climate data
+          fetch('/api/crop-recommendation/climate', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({district, season})
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.ok && data.climate) {
+              const climate = data.climate;
+              document.getElementById('temperature').value = climate.temperature.toFixed(1);
+              document.getElementById('humidity').value = climate.humidity.toFixed(1);
+              document.getElementById('rainfall').value = climate.rainfall.toFixed(1);
+              
+              // Update preview text
+              const previewElement = document.getElementById('seasonal-preview');
+              previewElement.innerHTML = `
+                <i class="fas fa-info-circle"></i>
+                <span>Using seasonal climate data for ${district} in ${season}: 
+                Temp: ${climate.temperature.toFixed(1)}°C, 
+                Humidity: ${climate.humidity.toFixed(1)}%, 
+                Rainfall: ${climate.rainfall.toFixed(0)}mm</span>
+              `;
+            } else {
+              alert('Could not load climate data: ' + (data.error || 'Unknown error'));
+            }
+          })
+          .catch(error => {
+            console.error('Error loading climate:', error);
+            alert('Error loading climate data. Please try again.');
+          })
+          .finally(() => {
+            // Reset button state
+            this.innerHTML = '<i class="fas fa-sync-alt"></i> Autofill';
+            this.disabled = false;
+          });
+        });
+        
+        // Toggle for seasonal climate data
+        document
+          .getElementById("toggleSeasonal")
+          .addEventListener("change", function () {
+            document
+              .getElementById("seasonal-preview")
+              .classList.toggle("hidden", !this.checked);
+            document
+              .getElementById("manual-climate")
+              .classList.toggle("hidden", this.checked);
+          });
+
+        // Toggle for soil input data
+        document
+          .getElementById("toggleSoil")
+          .addEventListener("change", function () {
+            document
+              .getElementById("soil-inputs")
+              .classList.toggle("hidden", !this.checked);
+          });
+      });
+
+      // Analyze data and show recommendations
+      function analyzeData() {
+        // In a real application, this would call an API with the form data
+        // For now, we'll simulate a loading state and show the results
+        const button = event.target;
+        button.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+        button.disabled = true;
+
+        setTimeout(() => {
+          showScreen("results-screen");
+          button.innerHTML =
+            '<i class="fas fa-search"></i> Get Crop Recommendations';
+          button.disabled = false;
+        }, 1500);
+      }
+
+      // Show crop details modal
+      function showCropDetails(crop) {
+        // In a real app, fetch crop data from an API
+        // For demo, we'll use hardcoded data
+        const cropData = {
+          rice: {
+            name: "Rice (Paddy)",
+            image: "images/crops/rice.jpg",
+            season: "Summer (Kharif) - June to November",
+            water:
+              "High - Requires standing water for most of the growing period",
+            yield: "3.5 - 6 tonnes per hectare under optimal conditions",
+            market: "₹1,800 - ₹2,400 per quintal (current season)",
+            varieties: "Basmati, IR-36, Swarna, MTU-7029, HMT",
+            tips: [
+              "Prepare seedbeds 5-10 days before sowing",
+              "Maintain water level of 2-5 cm during the vegetative stage",
+              "Apply balanced fertilizer: 100kg N, 50kg P and 50kg K per hectare",
+              "Watch for blast disease and stem borers - early detection is crucial",
+              "Harvest when 80% of the grains are golden yellow",
+            ],
+          },
+          maize: {
+            name: "Maize (Corn)",
+            image: "images/crops/maize.jpg",
+            season: "Summer (Kharif) & Spring (Zaid)",
+            water: "Medium - Regular irrigation needed during dry periods",
+            yield: "2.5 - 4 tonnes per hectare under optimal conditions",
+            market: "₹1,400 - ₹1,800 per quintal (current season)",
+            varieties: "Ganga 101, Deccan, Vijay, Ganga Safed-2",
+            tips: [
+              "Plant seeds at depth of 3-5 cm with spacing of 60x20 cm",
+              "First irrigation immediately after sowing and subsequent irrigations at 10-15 day intervals",
+              "Apply 120kg N, 60kg P and 40kg K per hectare",
+              "Control fall armyworm by early detection and treatment",
+              "Harvest when the silks turn brown and the cob cover leaves turn yellow",
+            ],
+          },
+          cotton: {
+            name: "Cotton",
+            image: "images/crops/cotton.jpg",
+            season: "Summer (Kharif) - April to October",
+            water: "Medium-High - Critical during flowering and boll formation",
+            yield: "15-20 quintals of seed cotton per hectare",
+            market: "₹5,000 - ₹6,200 per quintal (current season)",
+            varieties: "DCH-32, Bunny, RCH-2, Brahma",
+            tips: [
+              "Maintain plant spacing of 90x60 cm for hybrids and 60x30 cm for varieties",
+              "First irrigation at 4-5 weeks after sowing and then at 10-15 day intervals",
+              "Apply 100kg N, 50kg P and 50kg K per hectare in split doses",
+              "Monitor for bollworms and whiteflies regularly",
+              "Harvest when bolls are fully opened but before the cotton becomes discolored",
+            ],
+          },
+          soybean: {
+            name: "Soybean",
+            image: "images/crops/soybean.jpg",
+            season: "Summer (Kharif) - June to October",
+            water: "Medium - Critical during flowering and pod filling",
+            yield: "15-20 quintals per hectare under optimal conditions",
+            market: "₹3,600 - ₹4,000 per quintal (current season)",
+            varieties: "JS 335, JS 93-05, JS 95-60, NRC 7",
+            tips: [
+              "Sow seeds at 3-5 cm depth with 45x10 cm spacing",
+              "First irrigation immediately after sowing and then at critical growth stages",
+              "Apply 20kg N, 60kg P and 40kg K per hectare as basal dose",
+              "Watch for yellow mosaic virus and rust - use resistant varieties",
+              "Harvest when pods turn yellow to brown and leaves start shedding",
+            ],
+          },
+        };
+
+        // Get crop data
+        const data = cropData[crop] || cropData["rice"];
+
+        // Update modal with crop data
+        document.getElementById("modal-crop-name").textContent = data.name;
+        document.getElementById("modal-crop-image").src = data.image;
+        document.getElementById("modal-crop-image").alt = data.name;
+        document.getElementById("modal-growing-season").textContent =
+          data.season;
+        document.getElementById("modal-water").textContent = data.water;
+        document.getElementById("modal-yield").textContent = data.yield;
+        document.getElementById("modal-market").textContent = data.market;
+        document.getElementById("modal-varieties").textContent = data.varieties;
+
+        // Update tips list
+        const tipsList = document.getElementById("modal-tips");
+        tipsList.innerHTML = "";
+        data.tips.forEach((tip) => {
+          const li = document.createElement("li");
+          li.textContent = tip;
+          tipsList.appendChild(li);
+        });
+
+        // Show modal
+        document.getElementById("crop-details-modal").style.display = "flex";
+      }
+
+      // Close modal
+      function closeModal() {
+        document.getElementById("crop-details-modal").style.display = "none";
+      }
+
+      // Close modal when clicking on X
+      document
+        .querySelector(".close-modal")
+        .addEventListener("click", closeModal);
+
+      // Download report function
+      function downloadReport() {
+        alert("Generating PDF report with your crop recommendations...");
+      }
+
+      // Find seeds function
+      function findSeeds() {
+        alert(
+          "Connecting you to local seed suppliers for the recommended crops..."
+        );
+      }
+      // Back navigation handler
+      function goBack() {
+        // If we're in one of the app screens (not the welcome screen)
+        if (
+          document.getElementById("welcome-screen").classList.contains("hidden")
+        ) {
+          // Get the current screen ID
+          let currentScreenId = "";
+          document.querySelectorAll(".screen").forEach((screen) => {
+            if (!screen.classList.contains("hidden")) {
+              currentScreenId = screen.id;
+            }
+          });
+
+          // Determine which screen to go back to
+          switch (currentScreenId) {
+            case "region-screen":
+              showScreen("welcome-screen");
+              break;
+            case "soil-screen":
+              showScreen("region-screen");
+              break;
+            case "results-screen":
+              showScreen("soil-screen");
+              break;
+            default:
+              // Fallback: check if referrer exists and is from same domain
+              if (document.referrer && document.referrer !== '') {
+                const referrerUrl = new URL(document.referrer);
+                const currentUrl = new URL(window.location.href);
+                if (referrerUrl.hostname === currentUrl.hostname) {
+                  window.history.back();
+                } else {
+                  window.location.href = "{{ url_for('index') }}";
+                }
+              } else {
+                window.location.href = "{{ url_for('index') }}";
+              }
+          }
+        } else {
+          // If on welcome screen, check referrer or go to homepage
+          if (document.referrer && document.referrer !== '') {
+            const referrerUrl = new URL(document.referrer);
+            const currentUrl = new URL(window.location.href);
+            if (referrerUrl.hostname === currentUrl.hostname) {
+              window.history.back();
+            } else {
+              window.location.href = "{{ url_for('index') }}";
+            }
+          } else {
+            window.location.href = "{{ url_for('index') }}";
+          }
+        }
+      }
+    </script>
+    <!-- Include the crop recommendation API integration script -->
+    <script src="{{ url_for('static', filename='js/crop-recommendation.js') }}"></script>
+    <!-- Integration patch for multi-screen UI -->
+    <script src="{{ url_for('static', filename='js/crop-recommendation-patch.js') }}"></script>
+  </body>
+</html>

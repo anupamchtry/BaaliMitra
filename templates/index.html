@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BaaliMitra - Your Complete Farming Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  </head>
+  <body>
+    <!-- Existing Hero Section - Unchanged -->
+    <div class="background-container">
+      <header>
+        <div class="container">
+          <div class="logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="BaaliMitra Logo" />
+          </div>
+          <nav>
+            <ul>
+              <li><a href="#" class="active">Home</a></li>
+              <li><a href="#">Services</a></li>
+              <li><a href="#">Plant Diseases</a></li>
+              <li><a href="#">Blog</a></li>
+              <li><a href="#">Contact</a></li>
+            </ul>
+          </nav>
+          <div class="header-right">
+            <div class="language-toggle">
+              <button class="lang-btn active" data-lang="np">English</button>
+              <button class="lang-btn" data-lang="en">नेपाली</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero">
+          <div class="container">
+            <div class="hero-content">
+              <span class="tag">FARMING & RESOURCES</span>
+              <h2>Discover Crop Health with BaaliMitra!</h2>
+              <p>
+                Empowering Farmers Through Innovative Detection and Expert
+                Advice
+              </p>
+              <button class="get-started">Get Started</button>
+            </div>
+            <div class="hero-image">
+              <img src="{{ url_for('static', filename='images/farmer.png') }}" alt="Farmer with crops" />
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Feature Cards - Enhanced with Forum and Equipment Store -->
+    <section class="features">
+      <div class="container">
+        <a href="{{ url_for('disease_detection') }}" class="feature-card">
+          <div class="feature-icon">
+            <img
+              src="{{ url_for('static', filename='images/plant_disease.png') }}"
+              alt="Plant Disease Detection" />
+          </div>
+          <h3>Crop Disease Detection</h3>
+        </a>
+        <a href="{{ url_for('crop_recommendation') }}" class="feature-card">
+          <div class="feature-icon">
+            <img src="{{ url_for('static', filename='images/expert.png') }}" alt="Expert Consultation" />
+          </div>
+          <h3>Crop Recommendation</h3>
+        </a>
+      </div>
+    </section>
+
+    <!-- About Us Section - New -->
+    <section class="about-us">
+      <div class="leaf-decor leaf-top-left"></div>
+      <div class="leaf-decor leaf-bottom-right"></div>
+      <div class="container">
+        <div class="about-image-wrapper">
+          <div class="about-image">
+            <img src="{{ url_for('static', filename='images/user-logo.png') }}" alt="Farmer using BaaliMitra">
+          </div>
+        </div>
+        <div class="about-content">
+          <span class="section-tag">ABOUT US</span>
+          <h2 class="section-title">Welcome to BaaliMitra!</h2>
+          <p class="about-description">BaaliMitra, which translates to "farming friend" is an initiative designed to create a nurturing and supportive environment for farmers across Nepal. Our platform leverages technology to provide timely information, expert guidance, and community support.</p>
+          <p class="about-description">We combine traditional farming wisdom with modern technological solutions to help farmers increase productivity, reduce costs, and adopt sustainable practices.</p>
+          <button class="scroll-btn" id="scrollToSolutions">
+            SCROLL DOWN
+            <i class="fas fa-chevron-down"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Smart Farming Solutions Section - New -->
+    <section class="smart-farming" id="solutions">
+      <div class="pattern-overlay"></div>
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">BAALIMITRA</span>
+          <h2 class="section-title light">Our Smart Farming Solutions</h2>
+        </div>
+        
+        <div class="solutions-grid">
+          <a href="{{ url_for('disease_detection') }}" class="solution-card">
+            <div class="solution-icon">
+              <i class="fas fa-virus"></i>
+            </div>
+            <h3>CROP DISEASE PREDICTION</h3>
+            <p>Identify plant diseases early with AI-powered image recognition</p>
+            <div class="card-hover-effect"></div>
+          </a>
+          
+          <a href="{{ url_for('crop_recommendation') }}" class="solution-card">
+            <div class="solution-icon">
+              <i class="fas fa-seedling"></i>
+            </div>
+            <h3>CROP RECOMMENDATION</h3>
+            <p>Get personalized crop suggestions based on your soil and climate</p>
+            <div class="card-hover-effect"></div>
+          </a>
+          
+          <a href="{{ url_for('forum.forum_page') }}" class="solution-card">
+            <div class="solution-icon">
+              <i class="fas fa-comments"></i>
+            </div>
+            <h3>COMMUNITY FORUM</h3>
+            <p>Connect with farmers and experts to share knowledge</p>
+            <div class="card-hover-effect"></div>
+          </a>
+          
+          <a href="#" class="solution-card">
+            <div class="solution-icon">
+              <i class="fas fa-calculator"></i>
+            </div>
+            <h3>TREATMENT COST CALC.</h3>
+            <p>Estimate expenses for disease treatments and crop management</p>
+            <div class="card-hover-effect"></div>
+          </a>
+          
+          <a href="{{ url_for('equipment.equipment_store_page') }}" class="solution-card">
+            <div class="solution-icon">
+              <i class="fas fa-store"></i>
+            </div>
+            <h3>EQUIPMENT STORE</h3>
+            <p>Buy and rent farming equipment and tools at fair pricing</p>
+            <div class="card-hover-effect"></div>
+          </a>
+          
+          <a href="#" class="solution-card">
+            <div class="solution-icon">
+              <i class="fas fa-robot"></i>
+            </div>
+            <h3>ROBOTICS INTEGRATION</h3>
+            <p>Access cutting-edge agricultural automation technologies</p>
+            <div class="card-hover-effect"></div>
+          </a>
+        </div>
+        
+        <button class="show-more-btn" id="showMoreSolutions">
+          SHOW MORE
+          <span class="arrow-icon"><i class="fas fa-arrow-down"></i></span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Get Help Section - New -->
+    <section class="get-help">
+      <div class="container">
+        <h2 class="help-title">Need Help? Get Free Farming Advice</h2>
+        <div class="help-content">
+          <button class="expert-connect-btn">
+            <div class="phone-icon">
+              <i class="fas fa-phone-alt"></i>
+            </div>
+            <span>CONNECT TO A EXPERT</span>
+          </button>
+          <p class="powered-text">powered by baalimitra</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Market Connect Section - New -->
+    <section class="market-connect">
+      <div class="leaf-decor market-leaf-left"></div>
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">BAALIMITRA</span>
+          <h2 class="section-title">MARKET CONNECT</h2>
+          <p class="section-subtitle">Direct access to markets, equipment, and buyers</p>
+        </div>
+        
+        <div class="market-grid">
+          <div class="market-card">
+            <div class="market-card-content">
+              <h3>CURRENT CROP PRICES</h3>
+              <p>Track real-time market rates for your crops across different regions</p>
+              <button class="market-btn check-btn">
+                <i class="fas fa-search"></i> CHECK NOW
+              </button>
+            </div>
+          </div>
+          
+          <div class="market-card">
+            <div class="market-card-content">
+              <h3>FARMING EQUIPMENT</h3>
+              <p>Purchase or rent quality farming tools at competitive prices</p>
+              <button class="market-btn buy-btn">
+                <i class="fas fa-shopping-cart"></i> BUY NOW
+              </button>
+            </div>
+          </div>
+          
+          <div class="market-card">
+            <div class="market-card-content">
+              <h3>CONNECT WITH BUYERS</h3>
+              <p>Sell directly to consumers and businesses without middlemen</p>
+              <button class="market-btn connect-btn">
+                <i class="fas fa-handshake"></i> CONNECT
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Weather Forecast Section - New -->
+    <section class="weather-forecast">
+      <div class="container">
+        <div class="section-header weather-header">
+          <h2 class="section-title">WEATHER FORECAST</h2>
+          <p class="weather-subtitle">FARMING FRIENDLY FORECAST</p>
+        </div>
+        
+        <div class="weather-cards">
+          <div class="weather-card today">
+            <div class="weather-date">Today</div>
+            <div class="weather-icon">
+              <i class="fas fa-sun"></i>
+            </div>
+            <div class="weather-temp">28°C</div>
+            <div class="weather-details">
+              <span><i class="fas fa-tint"></i> 20%</span>
+              <span><i class="fas fa-wind"></i> 12 km/h</span>
+            </div>
+            <div class="farming-tip">
+              <i class="fas fa-lightbulb"></i>
+              <span>Good day for harvesting rice crops</span>
+            </div>
+          </div>
+          
+          <div class="weather-card">
+            <div class="weather-date">Tomorrow</div>
+            <div class="weather-icon">
+              <i class="fas fa-cloud-sun"></i>
+            </div>
+            <div class="weather-temp">26°C</div>
+            <div class="weather-details">
+              <span><i class="fas fa-tint"></i> 30%</span>
+              <span><i class="fas fa-wind"></i> 15 km/h</span>
+            </div>
+          </div>
+          
+          <div class="weather-card">
+            <div class="weather-date">Wed, Oct 18</div>
+            <div class="weather-icon">
+              <i class="fas fa-cloud-rain"></i>
+            </div>
+            <div class="weather-temp">24°C</div>
+            <div class="weather-details">
+              <span><i class="fas fa-tint"></i> 70%</span>
+              <span><i class="fas fa-wind"></i> 20 km/h</span>
+            </div>
+          </div>
+          
+          <div class="weather-card">
+            <div class="weather-date">Thu, Oct 19</div>
+            <div class="weather-icon">
+              <i class="fas fa-cloud-showers-heavy"></i>
+            </div>
+            <div class="weather-temp">22°C</div>
+            <div class="weather-details">
+              <span><i class="fas fa-tint"></i> 90%</span>
+              <span><i class="fas fa-wind"></i> 25 km/h</span>
+            </div>
+          </div>
+          
+          <div class="weather-card">
+            <div class="weather-date">Fri, Oct 20</div>
+            <div class="weather-icon">
+              <i class="fas fa-cloud"></i>
+            </div>
+            <div class="weather-temp">25°C</div>
+            <div class="weather-details">
+              <span><i class="fas fa-tint"></i> 40%</span>
+              <span><i class="fas fa-wind"></i> 18 km/h</span>
+            </div>
+          </div>
+        </div>
+        
+        <a href="#" class="weather-link">View 10-day forecast for your farm location <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </section>
+
+    <!-- Footer - New -->
+    <footer>
+      <div class="footer-main">
+        <div class="container">
+          <div class="footer-grid">
+            <div class="footer-about">
+              <h3>BaaliMitra</h3>
+              <p>Your complete farming assistant, helping farmers thrive through technology and community.</p>
+              <div class="app-badges">
+                <a href="#" class="app-badge">
+                  <i class="fab fa-google-play"></i> Google Play
+                </a>
+                <a href="#" class="app-badge">
+                  <i class="fab fa-apple"></i> App Store
+                </a>
+              </div>
+            </div>
+            
+            <div class="footer-links">
+              <h3>Features</h3>
+              <ul>
+                <li><a href="#">Crop Disease Detection</a></li>
+                <li><a href="#">Weather Alerts</a></li>
+                <li><a href="#">Crop Recommendation</a></li>
+                <li><a href="#">Cost Calculator</a></li>
+              </ul>
+            </div>
+            
+            <div class="footer-links">
+              <h3>Resources</h3>
+              <ul>
+                <li><a href="#">Farming Guides</a></li>
+                <li><a href="#">Seasonal Calendar</a></li>
+                <li><a href="#">Success Stories</a></li>
+                <li><a href="#">Research Papers</a></li>
+              </ul>
+            </div>
+            
+            <div class="footer-contact">
+              <h3>Contact</h3>
+              <p><i class="fas fa-map-marker-alt"></i> Kathmandu, Nepal</p>
+              <p><i class="fas fa-envelope"></i> info@baalimitra.com</p>
+              <p><i class="fas fa-phone"></i> +977 123456789</p>
+              <div class="social-links">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <div class="container">
+          <p>&copy; 2025 BaaliMitra - Made with <i class="fas fa-heart"></i> for Farmers</p>
+          <div class="footer-bottom-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">FAQ</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Language toggle
+      const buttons = document.querySelectorAll(".lang-btn");
+      buttons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          buttons.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          console.log(`Language switched to: ${btn.dataset.lang}`);
+        });
+      });
+      
+      // Scroll to Solutions section when clicking the scroll button
+      document.getElementById('scrollToSolutions').addEventListener('click', function() {
+        document.getElementById('solutions').scrollIntoView({ behavior: 'smooth' });
+      });
+      
+      // Show more solutions functionality
+      document.getElementById('showMoreSolutions').addEventListener('click', function() {
+        // This would typically show more solutions
+        // For demo purposes, we'll just alert
+        alert('More farming solutions would appear here!');
+      });
+      
+      // Counter animation for the 500+ farmers
+      function animateCounter() {
+        const counterElement = document.querySelector('.counter-number');
+        let count = 0;
+        const target = 500;
+        const duration = 2000; // 2 seconds
+        const interval = 10; // Update every 10ms
+        const increment = Math.ceil(target / (duration / interval));
+        
+        const timer = setInterval(() => {
+          count += increment;
+          if (count >= target) {
+            clearInterval(timer);
+            counterElement.innerHTML = `${target}<sup>+</sup>`;
+          } else {
+            counterElement.textContent = count;
+          }
+        }, interval);
+      }
+      
+      // Run counter animation when the counter is in view
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            animateCounter();
+            observer.unobserve(entry.target);
+          }
+        });
+      });
+      
+      observer.observe(document.querySelector('.farmers-counter'));
+    </script>
+  </body>
+</html>

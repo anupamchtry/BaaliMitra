@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BaaliMitra - Crop Disease Detection</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/disease-detection.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="nav-container">
+                <div class="nav-left">
+                    <a href="javascript:void(0);" class="back-link" onclick="goBackOrHome()">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    <a href="#" class="nav-item active">Disease Detection</a>
+                    <a href="#" class="nav-item">Crop Library</a>
+                </div>
+                
+                <a href="{{ url_for('index') }}" class="logo">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="BaaliMitra Logo">
+                </a>
+                
+                <div class="nav-right">
+                    <a href="#" class="nav-item">Expert Connect</a>
+                    <a href="#" class="nav-item">My History</a>
+                    <div class="user-profile">
+                        <img src="{{ url_for('static', filename='images/user-logo.png') }}" alt="User profile">
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Welcome Screen with Process Steps -->
+        <div class="screen" id="welcome-screen">
+            <div class="page-title">
+                <h1>Crop Disease Identification</h1>
+                <p>Detect plant diseases quickly and get effective treatment recommendations</p>
+            </div>
+            
+            <div class="process-container">
+                <div class="process-step">
+                    <div class="process-icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <h3>Take a picture</h3>
+                    <p>Capture/upload a clear image of the affected plant part</p>
+                    <div class="step-number">Step 1</div>
+                </div>
+                
+                <div class="process-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                
+                <div class="process-step">
+                    <div class="process-icon">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <h3>See diagnosis</h3>
+                    <p>AI analyzes the image and identifies the disease</p>
+                    <div class="step-number">Step 2</div>
+                </div>
+                
+                <div class="process-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                
+                <div class="process-step">
+                    <div class="process-icon">
+                        <i class="fas fa-prescription-bottle-alt"></i>
+                    </div>
+                    <h3>Get treatment</h3>
+                    <p>Receive customized treatment recommendations</p>
+                    <div class="step-number">Step 3</div>
+                </div>
+            </div>
+            
+            <div class="action-button">
+                <button class="primary-btn" onclick="showScreen('crop-select-screen')">Get Started</button>
+            </div>
+        </div>
+
+        <!-- Crop Selection Screen -->
+        <div class="screen hidden" id="crop-select-screen">
+            <div class="page-title">
+                <h1>Select Crop</h1>
+                <p>Choose your crop type for more accurate disease detection</p>
+            </div>
+            
+            <div class="crops-grid">
+
+                
+                <div class="crop-card available" onclick="selectCrop('potato')">
+                    <div class="crop-image">
+                        <img src="{{ url_for('static', filename='images/crops/potato.jpg') }}" alt="Potato Leaf">
+                    </div>
+                    <h3>Potato Leaf</h3>
+                    <span class="identifier available-badge">✓ Model Available</span>
+                </div>
+                
+                <div class="crop-card available" onclick="selectCrop('tomato')">
+                    <div class="crop-image">
+                        <img src="{{ url_for('static', filename='images/crops/tomato.jpg') }}" alt="Tomato Leaf">
+                    </div>
+                    <h3>Tomato Leaf</h3>
+                    <span class="identifier available-badge">✓ Model Available</span>
+                </div>
+                
+                <div class="crop-card available" onclick="selectCrop('rice')">
+                    <div class="crop-image">
+                        <img src="{{ url_for('static', filename='images/crops/rice.jpg') }}" alt="Rice Leaf">
+                    </div>
+                    <h3>Rice Leaf</h3>
+                    <span class="identifier available-badge">✓ Model Available</span>
+                </div>
+                
+                <div class="crop-card" onclick="selectCrop('other')">
+                    <div class="crop-image other-crop">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <h3>Other Crop</h3>
+                    <span class="identifier">Auto-detect</span>
+                </div>
+            </div>
+            
+            <div class="action-button">
+                <button class="secondary-btn" onclick="showScreen('welcome-screen')">Back</button>
+                <button class="primary-btn" onclick="showScreen('upload-screen')">Skip Selection</button>
+            </div>
+        </div>
+
+        <!-- Upload/Capture Image Screen -->
+        <div class="screen hidden" id="upload-screen">
+            <div class="page-title">
+                <h1><span id="selected-crop-name">Plant</span> Disease Detection</h1>
+                <p>Take or upload a clear image of the affected plant part</p>
+            </div>
+            
+            <div class="upload-container">
+                <div class="upload-preview" id="image-preview">
+                    <div class="upload-placeholder">
+                        <i class="fas fa-leaf"></i>
+                        <p>Your image will appear here</p>
+                    </div>
+                </div>
+                
+                <div class="upload-options">
+                    <a href="http://localhost:5001" class="upload-button camera-button" target="_blank" title="Open YOLO Real-Time Disease Detection">
+                        <i class="fas fa-camera"></i>
+                        <div>
+                            <h3>Take a picture (Advanced)</h3>
+                            <p>Real-time detection with camera</p>
+                        </div>
+                    </a>
+                    
+                    <label for="file-upload" class="upload-button camera-button">
+                        <i class="fas fa-camera"></i>
+                        <div>
+                            <h3>Take a picture</h3>
+                            <p>of your plant</p>
+                        </div>
+                    </label>
+                    <input type="file" id="file-upload" accept="image/*" capture="environment" hidden>
+                    
+                    <label for="file-select" class="upload-button gallery-button">
+                        <i class="fas fa-images"></i>
+                        <div>
+                            <h3>Upload a picture</h3>
+                            <p>from your device</p>
+                        </div>
+                    </label>
+                    <input type="file" id="file-select" accept="image/*" hidden>
+                    
+                    <button class="predict-button" id="predict-button" disabled>
+                        <i class="fas fa-search-plus"></i> Analyze Image
+                    </button>
+                    
+                    <div class="upload-tips">
+                        <h4><i class="fas fa-lightbulb"></i> Tips for best results:</h4>
+                        <ul>
+                            <li>Ensure good lighting</li>
+                            <li>Focus on the affected area</li>
+                            <li>Avoid shadows and glare</li>
+                            <li>Include some healthy parts for comparison</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-button">
+                <button class="secondary-btn" onclick="showScreen('crop-select-screen')">Back</button>
+            </div>
+        </div>
+
+        <!-- Disease Identification Results Screen -->
+        <div class="screen hidden" id="results-screen">
+            <div class="page-title">
+                <h1>Disease Identification Results</h1>
+                <p>Please confirm the analysis of your plant image</p>
+            </div>
+            
+            <!-- Workflow Progress Indicator -->
+            <div class="workflow-progress" id="workflow-progress" style="display: none;">
+                <h3><i class="fas fa-tasks"></i> Analysis Workflow</h3>
+                <div class="workflow-steps">
+                    <div class="workflow-step" id="step-leaf-detection">
+                        <div class="step-icon">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <div class="step-content">
+                            <h4>Leaf Detection</h4>
+                            <p class="step-status">Checking if image contains a plant leaf...</p>
+                        </div>
+                        <div class="step-result">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-step" id="step-species-detection">
+                        <div class="step-icon">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <div class="step-content">
+                            <h4>Plant Species</h4>
+                            <p class="step-status">Identifying plant species...</p>
+                        </div>
+                        <div class="step-result">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-step" id="step-disease-detection">
+                        <div class="step-icon">
+                            <i class="fas fa-microscope"></i>
+                        </div>
+                        <div class="step-content">
+                            <h4>Disease Detection</h4>
+                            <p class="step-status">Analyzing for diseases...</p>
+                        </div>
+                        <div class="step-result">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="results-container">
+                <div class="results-image-container">
+                    <img id="result-image" src="" alt="Uploaded plant image">
+                    
+                    <div class="verification-section">
+                        <h3>Confirm your leaf looks like these</h3>
+                        <div class="verification-images" id="verification-images">
+                            <div class="verification-image">
+                                <img src="" alt="Sample disease image" id="verify-img-1">
+                            </div>
+                            <div class="verification-image">
+                                <img src="" alt="Sample disease image" id="verify-img-2">
+                            </div>
+                            <div class="verification-image">
+                                <img src="" alt="Sample disease image" id="verify-img-3">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="results-info-container">
+                    <!-- Disease Alert Banner -->
+                    <div class="disease-alert" id="disease-alert">
+                        <div class="alert-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="alert-content">
+                            <h3>Disease Detected!</h3>
+                            <p>Immediate attention required to prevent crop damage</p>
+                        </div>
+                        <div class="severity-badge" id="severity-badge">
+                            <i class="fas fa-fire"></i> High Risk
+                        </div>
+                    </div>
+                    
+                    <div class="results-header">
+                        <h2 id="disease-name">Late Blight</h2>
+                        <span class="disease-type" id="disease-type">Fungal Infection</span>
+                        <div class="confidence-level">
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" style="width: 92%"></div>
+                            </div>
+                            <span>92% Confidence</span>
+                        </div>
+                    </div>
+                    
+                    <div class="results-details">
+                        <div class="result-section">
+                            <h3><i class="fas fa-exclamation-circle"></i> Symptoms</h3>
+                            <p id="disease-symptoms">Dark brown spots on leaves with yellowish borders. Leaves may curl and wither. White fungal growth may appear on the underside of leaves in humid conditions.</p>
+                        </div>
+                        
+                        <div class="result-section">
+                            <h3><i class="fas fa-microscope"></i> Scientific Name</h3>
+                            <p id="scientific-name"><i>Phytophthora infestans</i></p>
+                        </div>
+                        
+                        <div class="result-section">
+                            <h3><i class="fas fa-info-circle"></i> Additional Information</h3>
+                            <p>This disease spreads rapidly in cool, wet conditions. Without treatment, it can destroy an entire crop within days.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="results-actions">
+                        <div class="action-group">
+                            <button class="primary-btn" onclick="showScreen('treatment-screen')">
+                                <i class="fas fa-check-circle"></i> Confirm & See Treatment
+                            </button>
+                            <button class="ai-btn" onclick="askAI()">
+                                <i class="fas fa-robot"></i> Ask AI
+                            </button>
+                        </div>
+                        <button class="secondary-btn" onclick="showScreen('upload-screen')">
+                            <i class="fas fa-redo"></i> Try Again
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Treatment Recommendations Screen -->
+        <div class="screen hidden" id="treatment-screen">
+            <div class="page-title">
+                <h1>Treatment Recommendations</h1>
+                <p>Customized solutions for your crop disease</p>
+            </div>
+            
+            <div class="treatment-container">
+                <div class="treatment-image-container">
+                    <img id="treatment-image" src="" alt="Infected plant image">
+                    
+                    <div class="feedback-section">
+                        <h3>How useful did you find this diagnosis?</h3>
+                        <div class="rating-container">
+                            <span class="rating-star" data-rating="1"><i class="far fa-star"></i></span>
+                            <span class="rating-star" data-rating="2"><i class="far fa-star"></i></span>
+                            <span class="rating-star" data-rating="3"><i class="far fa-star"></i></span>
+                            <span class="rating-star" data-rating="4"><i class="far fa-star"></i></span>
+                            <span class="rating-star" data-rating="5"><i class="far fa-star"></i></span>
+                        </div>
+                        <textarea placeholder="Optional feedback..." class="feedback-text"></textarea>
+                        <button class="submit-feedback">Submit Feedback</button>
+                    </div>
+                </div>
+                
+                <div class="treatment-info-container">
+                    <div class="treatment-header">
+                        <h2>Treatment Plan for <span id="treatment-disease-name">Late Blight</span></h2>
+                    </div>
+                    
+                    <div class="treatment-details">
+                        <div class="treatment-section">
+                            <h3><i class="fas fa-prescription-bottle-alt"></i> Recommended Treatments</h3>
+                            <ul class="treatment-list">
+                                <li>
+                                    <span class="treatment-step">Immediate Action</span>
+                                    <p>Remove and destroy all infected plant material to prevent spread.</p>
+                                </li>
+                                <li>
+                                    <span class="treatment-step">Chemical Treatment</span>
+                                    <p>Apply copper-based fungicide or chlorothalonil to remaining plants.</p>
+                                </li>
+                                <li>
+                                    <span class="treatment-step">Ongoing Care</span>
+                                    <p>Improve air circulation between plants and avoid overhead watering.</p>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="treatment-section">
+                            <h3><i class="fas fa-shopping-basket"></i> Recommended Products</h3>
+                            <div class="product-recommendations">
+                                <div class="product-card">
+                                    <div class="product-image">
+                                        <img src="images/products/fungicide1.jpg" alt="Fungicide">
+                                    </div>
+                                    <div class="product-details">
+                                        <h4>BioFungal Shield</h4>
+                                        <p class="product-price">₹450 for 500ml</p>
+                                        <p class="product-description">Organic copper-based fungicide for late blight control</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="product-card">
+                                    <div class="product-image">
+                                        <img src="images/products/fungicide2.jpg" alt="Fungicide">
+                                    </div>
+                                    <div class="product-details">
+                                        <h4>BlightGuard Pro</h4>
+                                        <p class="product-price">₹380 for 250ml</p>
+                                        <p class="product-description">Systemic fungicide for quick absorption and longer protection</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="treatment-actions">
+                        <button class="secondary-btn" onclick="connectExpert()">
+                            <i class="fas fa-user-md"></i> Ask an Expert
+                        </button>
+                        <button class="primary-btn" onclick="buyTreatment()">
+                            <i class="fas fa-shopping-cart"></i> Buy Treatment Products
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Modal for No Leaf Detected -->
+        <div class="modal" id="no-leaf-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2><i class="fas fa-exclamation-triangle"></i> No Plant Detected</h2>
+                    <span class="close-modal">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <p>We couldn't clearly identify a plant in your image. Please ensure that:</p>
+                    <ul>
+                        <li>The plant occupies most of the frame</li>
+                        <li>The image is well-lit and in focus</li>
+                        <li>The affected area is clearly visible</li>
+                    </ul>
+                    <img src="images/photo-tips.jpg" alt="Photo taking tips" class="tips-image">
+                </div>
+                <div class="modal-footer">
+                    <button class="primary-btn" onclick="closeModal()">Take Another Photo</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Species Mismatch Modal -->
+        <div class="modal" id="species-mismatch-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2><i class="fas fa-exclamation-triangle"></i> Plant Mismatch</h2>
+                    <span class="close-modal" onclick="closeSpeciesMismatchModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <p id="mismatch-message"></p>
+                    <p style="margin-top: 15px; font-size: 14px; color: #666;">
+                        Please upload an image of the selected crop, or choose "Auto-detect" to identify any plant.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button class="secondary-btn" onclick="closeSpeciesMismatchModal()">Back</button>
+                    <button class="primary-btn" onclick="goBackToCropSelection()">Choose Different Crop</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- AI Chat Modal -->
+        <div class="ai-chat-modal" id="ai-chat-modal">
+            <div class="ai-chat-container">
+                <div class="ai-chat-header">
+                    <h3>
+                        <i class="fas fa-robot"></i>
+                        <span id="chat-disease-name">AI Assistant</span>
+                    </h3>
+                    <button class="close-chat" onclick="closeChatModal()">×</button>
+                </div>
+                
+                <div class="ai-chat-messages" id="chat-messages">
+                    <!-- Messages will be added here dynamically -->
+                </div>
+                
+                <div class="typing-indicator" id="typing-indicator">
+                    <span>AI is thinking</span>
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+                
+                <div class="ai-chat-input">
+                    <input 
+                        type="text" 
+                        class="chat-input-field" 
+                        id="chat-input" 
+                        placeholder="Ask about treatment, symptoms, prevention..."
+                        onkeypress="handleChatKeyPress(event)"
+                    />
+                    <button class="chat-btn voice-btn" id="voice-btn" onclick="toggleVoiceInput()" title="Voice input">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <button class="chat-btn send-btn" onclick="sendChatMessage()" id="send-btn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let selectedCrop = '';
+        let uploadedImageUrl = '';
+        let isInitialLoad = true;
+        
+        // Function to go back or to home page
+        function goBackOrHome() {
+            window.history.back();
+        }
+        
+        // Show specific screen and hide others with history management
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.add('hidden');
+            });
+            document.getElementById(screenId).classList.remove('hidden');
+            
+            // Update treatment screen if navigating to it
+            if (screenId === 'treatment-screen' && window.currentDiseaseData) {
+                updateTreatmentScreen(window.currentDiseaseData);
+            }
+            
+            // Add to browser history (only if not initial load)
+            if (!isInitialLoad) {
+                const state = { screen: screenId };
+                const url = `${window.location.pathname}#${screenId}`;
+                window.history.pushState(state, '', url);
+            }
+            
+            // Scroll to top when changing screens
+            window.scrollTo(0, 0);
+        }
+        
+        // Handle browser back/forward buttons
+        window.addEventListener('popstate', function(event) {
+            if (event.state && event.state.screen) {
+                // Navigate to the screen from history
+                isInitialLoad = true; // Prevent adding duplicate history entry
+                document.querySelectorAll('.screen').forEach(screen => {
+                    screen.classList.add('hidden');
+                });
+                document.getElementById(event.state.screen).classList.remove('hidden');
+                
+                if (event.state.screen === 'treatment-screen' && window.currentDiseaseData) {
+                    updateTreatmentScreen(window.currentDiseaseData);
+                }
+                
+                isInitialLoad = false;
+            } else {
+                // If no state, we're at the beginning - go to home
+                window.location.href = "{{ url_for('index') }}";
+            }
+        });
+        
+        // Initialize: Check if there's a hash in URL and show that screen
+        window.addEventListener('DOMContentLoaded', function() {
+            const hash = window.location.hash.substring(1); // Remove the #
+            if (hash && document.getElementById(hash)) {
+                isInitialLoad = true;
+                showScreen(hash);
+            } else {
+                // Set initial state for welcome screen
+                const state = { screen: 'welcome-screen' };
+                window.history.replaceState(state, '', window.location.pathname + '#welcome-screen');
+            }
+            isInitialLoad = false;
+        });
+        
+        // Function to update treatment screen with disease data
+        function updateTreatmentScreen(diseaseData) {
+            // Update disease name in treatment screen
+            document.getElementById('treatment-disease-name').textContent = diseaseData.disease_name;
+            
+            // Update treatment recommendations if available
+            if (diseaseData.disease_info) {
+                const info = diseaseData.disease_info;
+                const treatmentList = document.querySelector('.treatment-list');
+                
+                // Clear existing treatments
+                treatmentList.innerHTML = '';
+                
+                // Add prevention measures
+                if (info.prevention) {
+                    const preventionItem = document.createElement('li');
+                    preventionItem.innerHTML = `
+                        <span class="treatment-step">Prevention</span>
+                        <p>${info.prevention}</p>
+                    `;
+                    treatmentList.appendChild(preventionItem);
+                }
+                
+                // Add treatment
+                if (info.treatment) {
+                    const treatmentItem = document.createElement('li');
+                    treatmentItem.innerHTML = `
+                        <span class="treatment-step">Chemical Treatment</span>
+                        <p>${info.treatment}</p>
+                    `;
+                    treatmentList.appendChild(treatmentItem);
+                }
+                
+                // Add organic treatment
+                if (info.organic_treatment) {
+                    const organicItem = document.createElement('li');
+                    organicItem.innerHTML = `
+                        <span class="treatment-step">Organic Treatment</span>
+                        <p>${info.organic_treatment}</p>
+                    `;
+                    treatmentList.appendChild(organicItem);
+                }
+            }
+        }
+        
+        // Handle crop selection
+        function selectCrop(cropType) {
+            selectedCrop = cropType;
+            
+            // Update UI to show selected crop
+            const cropNameMap = {
+                'potato': 'Potato',
+                'tomato': 'Tomato',
+                'rice': 'Rice',
+                'corn': 'Corn',
+                'wheat': 'Wheat',
+                'other': 'Unknown'
+            };
+            
+            document.getElementById('selected-crop-name').textContent = cropNameMap[cropType];
+            showScreen('upload-screen');
+        }
+        
+        // Handle image upload
+        document.getElementById('file-upload').addEventListener('change', handleImageUpload);
+        document.getElementById('file-select').addEventListener('change', handleImageUpload);
+        
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file && file.type.match('image.*')) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    uploadedImageUrl = e.target.result;
+                    
+                    // Display the uploaded image
+                    const previewContainer = document.getElementById('image-preview');
+                    previewContainer.innerHTML = `<img src="${uploadedImageUrl}" alt="Uploaded plant image">`;
+                    
+                    // Enable the predict button
+                    document.getElementById('predict-button').disabled = false;
+                }
+                
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        // Handle prediction
+        document.getElementById('predict-button').addEventListener('click', async function() {
+            if (!uploadedImageUrl) {
+                alert('Please upload an image first');
+                return;
+            }
+            
+            // Show loading state
+            const button = this;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+            button.disabled = true;
+            
+            // Show workflow progress indicator
+            showWorkflowProgress();
+            
+            try {
+                // Prepare data for API
+                const requestData = {
+                    image: uploadedImageUrl,
+                    crop_type: selectedCrop === 'other' ? null : selectedCrop
+                };
+                
+                // Call disease detection API
+                const response = await fetch('/api/disease-detection', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Update UI with results
+                    updateResultsScreen(result);
+                    
+                    // Set result images
+                    document.getElementById('result-image').src = uploadedImageUrl;
+                    document.getElementById('treatment-image').src = uploadedImageUrl;
+                    
+                    // Show results screen
+                    showScreen('results-screen');
+                } else {
+                    // Handle different types of errors
+                    if (result.final_result && result.final_result.error) {
+                        // Check if it's a species mismatch error
+                        if (result.final_result.error === 'Species Mismatch') {
+                            // Show species mismatch modal
+                            const modal = document.getElementById('species-mismatch-modal');
+                            const message = document.getElementById('mismatch-message');
+                            message.innerHTML = `
+                                <strong>${result.final_result.message}</strong><br>
+                                We detected a <strong>${result.final_result.detected_species}</strong> plant, 
+                                but you selected <strong>${result.final_result.expected_species}</strong>.
+                            `;
+                            modal.style.display = 'flex';
+                        }
+                        // Check if it's a leaf detection error
+                        else if (result.final_result.error.includes('No leaf detected')) {
+                            // Show no leaf detected modal
+                            document.getElementById('no-leaf-modal').style.display = 'flex';
+                        } else {
+                            // Show generic error
+                            alert(result.final_result.error);
+                        }
+                    } else {
+                        // Fallback error message
+                        alert(result.message || 'Analysis failed. Please try again.');
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Error during disease detection:', error);
+                alert('Network error. Please check your connection and try again.');
+            } finally {
+                // Reset button
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }
+        });
+        
+        // Function to show workflow progress
+        function showWorkflowProgress() {
+            document.getElementById('workflow-progress').style.display = 'block';
+        }
+        
+        // Function to update workflow step
+        function updateWorkflowStep(stepId, status, message, icon = null) {
+            const step = document.getElementById(`step-${stepId}`);
+            const statusElement = step.querySelector('.step-status');
+            const resultElement = step.querySelector('.step-result');
+            
+            // Update status message
+            statusElement.textContent = message;
+            
+            // Update step appearance
+            step.classList.remove('completed', 'error');
+            if (status === 'completed') {
+                step.classList.add('completed');
+                resultElement.innerHTML = '<i class="fas fa-check"></i>';
+            } else if (status === 'error') {
+                step.classList.add('error');
+                resultElement.innerHTML = '<i class="fas fa-times"></i>';
+            } else if (status === 'running') {
+                resultElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            } else {
+                resultElement.innerHTML = '<i class="fas fa-clock"></i>';
+            }
+        }
+        
+        // Function to update results screen with API response
+        function updateResultsScreen(result) {
+            console.log('Updating results screen with:', result);
+            
+            // Show workflow progress
+            showWorkflowProgress();
+            
+            // Update workflow steps based on API response
+            if (result.workflow_steps && result.workflow_steps.length > 0) {
+                result.workflow_steps.forEach(step => {
+                    const stepName = step.step.replace('_', '-');
+                    const stepResult = step.result;
+                    
+                    if (stepName === 'leaf-detection') {
+                        if (stepResult.is_leaf) {
+                            updateWorkflowStep('leaf-detection', 'completed', 
+                                `Leaf detected with ${Math.round(stepResult.confidence * 100)}% confidence`);
+                        } else {
+                            updateWorkflowStep('leaf-detection', 'error', 
+                                'No leaf detected in the image');
+                        }
+                    } else if (stepName === 'species-detection') {
+                        updateWorkflowStep('species-detection', 'completed', 
+                            `Plant species: ${stepResult.species} (${Math.round(stepResult.confidence * 100)}% confidence)`);
+                    } else if (stepName === 'disease-detection') {
+                        updateWorkflowStep('disease-detection', 'completed', 
+                            `Disease analysis completed (${Math.round(stepResult.confidence * 100)}% confidence)`);
+                    }
+                });
+            }
+            
+            // Check if we have final results
+            if (result.final_result && Object.keys(result.final_result).length > 0) {
+                const finalResult = result.final_result;
+                
+                // Handle error cases
+                if (finalResult.error) {
+                    document.getElementById('disease-name').textContent = 'Analysis Error';
+                    document.getElementById('disease-type').textContent = 'Error';
+                    document.getElementById('disease-symptoms').textContent = finalResult.error;
+                    
+                    // Set confidence to 0
+                    const confidenceBar = document.querySelector('.confidence-fill');
+                    const confidenceText = document.querySelector('.confidence-level span');
+                    confidenceBar.style.width = '0%';
+                    confidenceText.textContent = '0% Confidence';
+                    return;
+                }
+                
+                // Handle successful disease detection
+                if (finalResult.disease) {
+                    document.getElementById('disease-name').textContent = finalResult.disease;
+                    
+                    // Update confidence bar
+                    const confidence = Math.round((finalResult.confidence || 0) * 100);
+                    const confidenceBar = document.querySelector('.confidence-fill');
+                    const confidenceText = document.querySelector('.confidence-level span');
+                    confidenceBar.style.width = confidence + '%';
+                    confidenceText.textContent = confidence + '% Confidence';
+                    
+                    // Update disease alert banner based on disease status
+                    updateDiseaseAlert(finalResult.disease, confidence);
+                    
+                    // Update disease type based on disease name
+                    const diseaseTypeElement = document.getElementById('disease-type');
+                    const diseaseName = finalResult.disease.toLowerCase();
+                    if (diseaseName.includes('virus')) {
+                        diseaseTypeElement.textContent = 'Viral Infection';
+                    } else if (diseaseName.includes('bacterial')) {
+                        diseaseTypeElement.textContent = 'Bacterial Infection';
+                    } else if (diseaseName.includes('healthy')) {
+                        diseaseTypeElement.textContent = 'Healthy Plant';
+                    } else {
+                        diseaseTypeElement.textContent = 'Fungal Infection';
+                    }
+                    
+                    // Update symptoms
+                    if (finalResult.symptoms) {
+                        document.getElementById('disease-symptoms').textContent = finalResult.symptoms;
+                    }
+                    
+                    // Show reliability warnings if present
+                    if (finalResult.reliability_warnings && finalResult.reliability_warnings.length > 0) {
+                        // Add warning section to results
+                        const symptomsElement = document.getElementById('disease-symptoms');
+                        const warningText = finalResult.reliability_warnings.join('. ');
+                        symptomsElement.innerHTML = `
+                            <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                                <div style="display: flex; align-items: center; color: #856404; font-weight: 500; margin-bottom: 8px;">
+                                    <i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i>
+                                    Reliability Notice
+                                </div>
+                                <div style="color: #856404; font-size: 14px;">${warningText}</div>
+                            </div>
+                            ${finalResult.symptoms || ''}
+                        `;
+                    }
+                    
+                    // Update scientific name based on disease
+                    updateScientificName(finalResult.disease);
+                    
+                    // Update verification images based on disease
+                    updateVerificationImages(finalResult.disease);
+                    
+                    // Store disease data for treatment screen
+                    window.currentDiseaseData = {
+                        disease_name: finalResult.disease,
+                        disease_info: {
+                            symptoms: finalResult.symptoms,
+                            treatment: finalResult.treatment,
+                            prevention: finalResult.prevention
+                        }
+                    };
+                }
+                
+                // Handle crop identification without disease model
+                else if (finalResult.crop && !finalResult.model_available) {
+                    document.getElementById('disease-name').textContent = finalResult.crop;
+                    document.getElementById('disease-type').textContent = 'Species Identified';
+                    document.getElementById('disease-symptoms').textContent = 
+                        finalResult.message || 'Plant species identified but no disease detection model available for this crop.';
+                    
+                    // Set moderate confidence for species detection
+                    const confidenceBar = document.querySelector('.confidence-fill');
+                    const confidenceText = document.querySelector('.confidence-level span');
+                    confidenceBar.style.width = '75%';
+                    confidenceText.textContent = '75% Confidence';
+                }
+            }
+            
+            // Display workflow steps if available (for debugging/transparency)
+            if (result.workflow_steps && result.workflow_steps.length > 0) {
+                console.log('Workflow steps executed:');
+                result.workflow_steps.forEach((step, index) => {
+                    console.log(`Step ${index + 1}: ${step.step}`, step.result);
+                });
+            }
+        }
+        
+        // Function to update scientific name based on disease
+        function updateScientificName(diseaseName) {
+            const scientificNames = {
+                'Potato Early Blight': 'Alternaria solani',
+                'Potato Late Blight': 'Phytophthora infestans',
+                'Rice Bacterial Leaf Blight': 'Xanthomonas oryzae',
+                'Rice Brown Spot': 'Bipolaris oryzae',
+                'Rice Leaf Blast': 'Magnaporthe oryzae',
+                'Rice Neck Blast': 'Magnaporthe oryzae',
+                'Tomato Bacterial Spot': 'Xanthomonas species',
+                'Tomato Early Blight': 'Alternaria solani',
+                'Tomato Late Blight': 'Phytophthora infestans',
+                'Tomato Leaf Mold': 'Passalora fulva',
+                'Tomato Mosaic Virus': 'Tomato Mosaic Virus',
+                'Tomato Septoria Leaf Spot': 'Septoria lycopersici',
+                'Tomato Spider Mites': 'Tetranychus urticae',
+                'Tomato Target Spot': 'Corynespora cassiicola',
+                'Tomato Yellow Leaf Curl Virus': 'Tomato Yellow Leaf Curl Virus'
+            };
+            
+            const scientificName = scientificNames[diseaseName] || 'Scientific name not available';
+            document.getElementById('scientific-name').innerHTML = `<i>${scientificName}</i>`;
+        }
+        
+        // Function to update verification images based on disease
+        function updateVerificationImages(diseaseName) {
+            // Map disease names to image paths
+            const diseaseImageMap = {
+                // Potato diseases
+                'Potato Early Blight': 'Potato/Potato___Early_blight',
+                'Potato Late Blight': 'Potato/Potato___Late_blight',
+                'Potato Healthy': 'Potato/Potato___healthy',
+                
+                // Rice diseases
+                'Rice Bacterial Leaf Blight': 'Rice/Rice___Bacterial_Leaf_Blight',
+                'Rice Brown Spot': 'Rice/Rice___Brown_Spot',
+                'Rice Leaf Blast': 'Rice/Rice___Leaf_Blast',
+                'Rice Leaf Scald': 'Rice/Rice___Leaf_Scald',
+                'Rice Healthy': 'Rice/Rice___Healthy_Rice_Leaf',
+                
+                // Tomato diseases
+                'Tomato Bacterial Spot': 'Tomato/Tomato___Bacterial_spot',
+                'Tomato Early Blight': 'Tomato/Tomato___Early_blight',
+                'Tomato Late Blight': 'Tomato/Tomato___Late_blight',
+                'Tomato Leaf Mold': 'Tomato/Tomato___Leaf_Mold',
+                'Tomato Mosaic Virus': 'Tomato/Tomato___Tomato_mosaic_virus',
+                'Tomato Septoria Leaf Spot': 'Tomato/Tomato___Septoria_leaf_spot',
+                'Tomato Spider Mites': 'Tomato/Tomato___Spider_mites Two-spotted_spider_mite',
+                'Tomato Target Spot': 'Tomato/Tomato___Target_Spot',
+                'Tomato Yellow Leaf Curl Virus': 'Tomato/Tomato___Tomato_Yellow_Leaf_Curl_Virus',
+                'Tomato Healthy': 'Tomato/Tomato___healthy'
+            };
+            
+            const imagePath = diseaseImageMap[diseaseName];
+            
+            if (imagePath) {
+                // Update the three verification images
+                for (let i = 1; i <= 3; i++) {
+                    const imgElement = document.getElementById(`verify-img-${i}`);
+                    if (imgElement) {
+                        imgElement.src = `{{ url_for('static', filename='images/crops/') }}${imagePath}_${i}.jpg`;
+                        imgElement.alt = `${diseaseName} sample ${i}`;
+                    }
+                }
+            } else {
+                // If no specific images found, hide the verification section
+                const verificationSection = document.querySelector('.verification-section');
+                if (verificationSection) {
+                    verificationSection.style.display = 'none';
+                }
+            }
+        }
+        
+        // Function to update disease alert banner
+        function updateDiseaseAlert(diseaseName, confidence) {
+            const alertBanner = document.getElementById('disease-alert');
+            const alertIcon = alertBanner.querySelector('.alert-icon i');
+            const alertTitle = alertBanner.querySelector('.alert-content h3');
+            const alertMessage = alertBanner.querySelector('.alert-content p');
+            const severityBadge = document.getElementById('severity-badge');
+            
+            const diseaseLower = diseaseName.toLowerCase();
+            
+            // Check if plant is healthy
+            if (diseaseLower.includes('healthy')) {
+                alertBanner.className = 'disease-alert healthy';
+                alertIcon.className = 'fas fa-check-circle';
+                alertTitle.textContent = 'Plant is Healthy!';
+                alertMessage.textContent = 'No disease detected. Your crop is in good condition.';
+                severityBadge.innerHTML = '<i class="fas fa-leaf"></i> Healthy';
+            } 
+            // High severity diseases
+            else if (diseaseLower.includes('blight') || diseaseLower.includes('blast') || diseaseLower.includes('virus')) {
+                alertBanner.className = 'disease-alert';
+                alertIcon.className = 'fas fa-exclamation-triangle';
+                alertTitle.textContent = 'Disease Detected!';
+                alertMessage.textContent = 'Immediate attention required to prevent crop damage';
+                severityBadge.innerHTML = '<i class="fas fa-fire"></i> High Risk';
+            }
+            // Moderate severity diseases
+            else if (diseaseLower.includes('spot') || diseaseLower.includes('mold') || diseaseLower.includes('scald')) {
+                alertBanner.className = 'disease-alert moderate';
+                alertIcon.className = 'fas fa-exclamation-circle';
+                alertTitle.textContent = 'Disease Detected';
+                alertMessage.textContent = 'Action needed soon to prevent spread';
+                severityBadge.innerHTML = '<i class="fas fa-triangle-exclamation"></i> Moderate Risk';
+            }
+            // Low to moderate severity
+            else {
+                alertBanner.className = 'disease-alert moderate';
+                alertIcon.className = 'fas fa-info-circle';
+                alertTitle.textContent = 'Issue Detected';
+                alertMessage.textContent = 'Monitor your crop and apply treatment if needed';
+                severityBadge.innerHTML = '<i class="fas fa-eye"></i> Monitor';
+            }
+        }
+        
+        // Close modal
+        function closeModal() {
+            document.getElementById('no-leaf-modal').style.display = 'none';
+        }
+        
+        // Close species mismatch modal
+        function closeSpeciesMismatchModal() {
+            document.getElementById('species-mismatch-modal').style.display = 'none';
+            showScreen('upload-screen');
+        }
+        
+        // Go back to crop selection from mismatch modal
+        function goBackToCropSelection() {
+            document.getElementById('species-mismatch-modal').style.display = 'none';
+            selectedCrop = '';
+            showScreen('crop-select-screen');
+        }
+        
+        document.querySelector('.close-modal').addEventListener('click', closeModal);
+        
+        // Rating system
+        document.querySelectorAll('.rating-star').forEach(star => {
+            star.addEventListener('click', function() {
+                const rating = parseInt(this.getAttribute('data-rating'));
+                
+                // Reset all stars
+                document.querySelectorAll('.rating-star').forEach(s => {
+                    s.innerHTML = '<i class="far fa-star"></i>';
+                });
+                
+                // Fill stars up to the selected rating
+                document.querySelectorAll('.rating-star').forEach(s => {
+                    if (parseInt(s.getAttribute('data-rating')) <= rating) {
+                        s.innerHTML = '<i class="fas fa-star"></i>';
+                    }
+                });
+            });
+        });
+        
+        // Submit feedback
+        document.querySelector('.submit-feedback').addEventListener('click', function() {
+            alert('Thank you for your feedback! It helps us improve our disease detection system.');
+        });
+        
+        // Expert connect function
+        function connectExpert() {
+            alert('Connecting you with an agricultural expert. Please wait while we find someone available to help you.');
+        }
+        
+        // Buy treatment function
+        function buyTreatment() {
+            alert('Redirecting to our online store where you can purchase the recommended products.');
+        }
+        
+        // ===== AI CHAT FUNCTIONALITY =====
+        let chatHistory = [];
+        let recognition = null;
+        let isRecording = false;
+        
+        // Initialize speech recognition
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+            
+            recognition.onstart = function() {
+                console.log('Voice recognition started');
+            };
+            
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('chat-input').value = transcript;
+                isRecording = false;
+                document.getElementById('voice-btn').classList.remove('recording');
+                console.log('Recognized text:', transcript);
+            };
+            
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error:', event.error);
+                isRecording = false;
+                document.getElementById('voice-btn').classList.remove('recording');
+                
+                if (event.error === 'no-speech') {
+                    alert('No speech detected. Please try again.');
+                } else if (event.error === 'network') {
+                    // Ignore network errors for voice - it's optional
+                    console.warn('Voice recognition network error (this is okay, feature is optional)');
+                } else if (event.error === 'not-allowed') {
+                    alert('Microphone access denied. Please allow microphone access in browser settings.');
+                } else {
+                    alert('Voice recognition error: ' + event.error);
+                }
+            };
+            
+            recognition.onend = function() {
+                isRecording = false;
+                document.getElementById('voice-btn').classList.remove('recording');
+            };
+        }
+        
+        // Ask AI function - Opens chat modal
+        function askAI() {
+            if (!window.currentDiseaseData) {
+                alert('Please detect a disease first before using AI assistant.');
+                return;
+            }
+            
+            // Show modal
+            document.getElementById('ai-chat-modal').style.display = 'flex';
+            
+            // Set disease name in header
+            document.getElementById('chat-disease-name').textContent = 
+                'AI Assistant - ' + window.currentDiseaseData.disease_name;
+            
+            // Clear previous chat
+            chatHistory = [];
+            document.getElementById('chat-messages').innerHTML = '';
+            
+            // Send initial greeting
+            sendInitialGreeting();
+        }
+        
+        // Close chat modal
+        function closeChatModal() {
+            document.getElementById('ai-chat-modal').style.display = 'none';
+            if (isRecording && recognition) {
+                recognition.stop();
+                isRecording = false;
+                document.getElementById('voice-btn').classList.remove('recording');
+            }
+        }
+        
+        // Toggle voice input
+        function toggleVoiceInput() {
+            if (!recognition) {
+                alert('Voice input is not supported in your browser. Please use Chrome or Edge.');
+                return;
+            }
+            
+            if (isRecording) {
+                recognition.stop();
+                isRecording = false;
+                document.getElementById('voice-btn').classList.remove('recording');
+            } else {
+                isRecording = true;
+                document.getElementById('voice-btn').classList.add('recording');
+                recognition.start();
+            }
+        }
+        
+        // Handle Enter key in chat input
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+        
+        // Send initial greeting
+        async function sendInitialGreeting() {
+            showTypingIndicator();
+            
+            try {
+                const response = await fetch('/api/ai-chat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        disease_name: window.currentDiseaseData.disease_name,
+                        crop_type: selectedCrop || 'plant',
+                        is_initial: true,
+                        symptoms: window.currentDiseaseData.symptoms,
+                        treatment: window.currentDiseaseData.treatment
+                    })
+                });
+                
+                const data = await response.json();
+                hideTypingIndicator();
+                
+                if (data.success) {
+                    addMessage('ai', data.answer);
+                } else {
+                    addMessage('ai', 'Hello! I\'m here to help you understand the disease. What would you like to know?');
+                }
+            } catch (error) {
+                hideTypingIndicator();
+                addMessage('ai', 'Hello! I\'m here to help you understand the disease. What would you like to know?');
+            }
+        }
+        
+        // Send chat message
+        async function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message
+            addMessage('user', message);
+            input.value = '';
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            try {
+                const response = await fetch('/api/ai-chat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        disease_name: window.currentDiseaseData.disease_name,
+                        crop_type: selectedCrop || 'plant',
+                        question: message,
+                        is_initial: false,
+                        symptoms: window.currentDiseaseData.symptoms,
+                        treatment: window.currentDiseaseData.treatment
+                    })
+                });
+                
+                const data = await response.json();
+                hideTypingIndicator();
+                
+                if (data.success) {
+                    addMessage('ai', data.answer);
+                } else {
+                    addMessage('ai', 'Sorry, I\'m having trouble right now. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                hideTypingIndicator();
+                addMessage('ai', 'Sorry, I couldn\'t connect to the server. Please check your internet connection.');
+            }
+        }
+        
+        // Add message to chat
+        function addMessage(sender, text) {
+            const messagesContainer = document.getElementById('chat-messages');
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${sender}`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.innerHTML = sender === 'ai' ? '<i class="fas fa-robot"></i>' : '<i class="fas fa-user"></i>';
+            
+            const content = document.createElement('div');
+            content.className = 'message-content';
+            content.textContent = text;
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(content);
+            
+            // Append message to container
+            messagesContainer.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // Add to history
+            chatHistory.push({sender, text, timestamp: new Date()});
+        }
+        
+        // Show typing indicator
+        function showTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) {
+                indicator.classList.add('active');
+            }
+        }
+        
+        // Hide typing indicator
+        function hideTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) {
+                indicator.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>

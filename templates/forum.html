@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BaaliMitra Forum</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/forum.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <div class="app-container">
+    <header>
+            <div class="nav-container">
+                <div class="nav-left">
+                    <a href="{{ url_for('index') }}" class="back-link">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    <a href="#" class="nav-item active">Disease Detection</a>
+                    <a href="#" class="nav-item">Crop Library</a>
+                </div>
+                
+                <a href="{{ url_for('index') }}" class="logo">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="BaaliMitra Logo">
+                </a>
+                
+                <div class="nav-right">
+                    <a href="#" class="nav-item">Expert Connect</a>
+                    <a href="#" class="nav-item">My History</a>
+                    <div class="user-profile">
+                        <img src="{{ url_for('static', filename='images/user-logo.png') }}" alt="User profile">
+                    </div>
+                </div>
+            </div>
+        </header>
+
+  <main class="fm-main">
+    <section class="fm-search">
+      <input id="searchInput" type="search" placeholder="Search questions, crops or symptoms..." />
+    </section>
+
+    <section class="fm-filters">
+      <select id="filterCategory" class="filter-pill select-pill">
+        <option value="">Filter by Category</option>
+        <option value="Plant Disease">Plant Disease</option>
+        <option value="Soil & Fertilizer">Soil & Fertilizer</option>
+        <option value="Market">Market</option>
+        <option value="Equipment">Equipment</option>
+        <option value="General">General</option>
+      </select>
+      
+      <select id="filterLocation" class="filter-pill select-pill">
+        <option value="">Filter by Location</option>
+        {% for d in districts %}
+        <option value="{{ d }}">{{ d }}</option>
+        {% endfor %}
+      </select>
+    </section>
+
+    <section id="postList" class="post-grid" aria-live="polite">
+      <div class="empty">Loading posts…</div>
+    </section>
+  </main>
+
+  <!-- Create button -->
+  <button id="createBtn" class="create-btn">
+    <span class="plus">+</span> CREATE
+  </button>
+
+  <!-- New Post Modal -->
+  <div id="postModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="postModalTitle">
+    <div class="modal-inner">
+      <header class="modal-header">
+        <h2 id="postModalTitle">Ask a question</h2>
+        <button id="closeModal" class="icon-btn"><i class="fas fa-times"></i></button>
+      </header>
+
+      <form id="postForm" class="post-form">
+        <label>
+          Title
+          <input id="postTitle" name="title" placeholder="Leaves turning yellow — what to do?" required maxlength="120">
+        </label>
+
+        <label>
+          Category
+          <select id="postCategory" name="category">
+            <option>Plant Disease</option>
+            <option>Soil & Fertilizer</option>
+            <option>Market</option>
+            <option>Equipment</option>
+            <option>General</option>
+          </select>
+        </label>
+
+        <label>
+          District
+          <select id="postDistrict" name="district">
+            <option value="">Select district</option>
+            {% for d in districts %}
+            <option value="{{ d }}">{{ d }}</option>
+            {% endfor %}
+          </select>
+        </label>
+
+        <label>
+          Details (short)
+          <textarea id="postBody" name="body" rows="4" placeholder="Describe problem, crop, age, recent treatments..."></textarea>
+        </label>
+
+        <div class="media-row">
+          <input id="postImage" type="file" accept="image/*" />
+          <button id="voiceBtn" type="button" title="Use voice input"><i class="fas fa-microphone"></i></button>
+        </div>
+
+        <div id="imagePreview" class="image-preview hidden"></div>
+
+        <div class="modal-actions">
+          <button id="saveDraftBtn" type="button" class="secondary">Save draft</button>
+          <button id="submitPostBtn" type="submit" class="primary">Post</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- drawer for detail -->
+  <aside id="detailDrawer" class="detail-drawer hidden" aria-hidden="true">
+    <div class="drawer-header">
+      <button id="closeDetail" class="icon-btn"><i class="fas fa-times"></i></button>
+      <div id="detailTitle" class="drawer-title">Post</div>
+    </div>
+    <div id="detailContent" class="drawer-content"></div>
+  </aside>
+
+  <!-- toast -->
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/forum.js') }}"></script>
+</body>
+</html>
